@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from afra.models.fg_models import *
 from afra.models.bg_models import *
-from afra.tools.ps_estimator import pstimator
+from afra.tools.pcl_estimator import pstimator
 from afra.tools.aux import gvec, empcov
 
 
@@ -650,6 +650,7 @@ class pipe(object):
                 self._data_bp[:,:,j,i] = np.array(stmp[1:1+self._ntarget])
 
     def plot_data(self):
+        mm = ['d', 'o', 's'][:self._ntarget]
         cc = ['firebrick', 'midnightblue', 'darkorange'][:self._ntarget]
         fig = plt.figure(figsize=(5*self._nfreq,5*self._nfreq))
         for i in range(self._nfreq):
@@ -659,7 +660,7 @@ class pipe(object):
                 ax.tick_params(axis='both',which='major',labelsize='15')
                 ax.set_yscale('log')
                 for k in range(self._ntarget):
-                    ax.scatter(self._estimator.modes,self._data_bp[k,:,i,j],marker='o',s=20,c=cc[k])
+                    ax.scatter(self._estimator.modes,self._data_bp[k,:,i,j],marker=mm[k],s=20,c=cc[k])
         labels = list()
         for t in self._targets:
             labels.append('{} data'.format(t))
@@ -667,6 +668,7 @@ class pipe(object):
         plt.savefig('data_bp.pdf')
 
     def plot_fiducial(self):
+        mm = ['d', 'o', 's'][:self._ntarget]
         cc = ['firebrick', 'midnightblue', 'darkorange'][:self._ntarget]
         fig = plt.figure(figsize=(5*self._nfreq,5*self._nfreq))
         for i in range(self._nfreq):
@@ -676,7 +678,7 @@ class pipe(object):
                 ax.tick_params(axis='both',which='major',labelsize='15')
                 ax.set_yscale('log')
                 for k in range(self._ntarget):
-                    ax.errorbar(self._estimator.modes,np.mean(self._fiducial_bp[:,k,:,i,j],axis=0),yerr=np.std(self._fiducial_bp[:,k,:,i,j],axis=0),fmt='o',ms=10,mfc='none',mec=cc[k])
+                    ax.errorbar(self._estimator.modes,np.mean(self._fiducial_bp[:,k,:,i,j],axis=0),yerr=np.std(self._fiducial_bp[:,k,:,i,j],axis=0),fmt=mm[k],ms=10,mfc='none',mec=cc[k])
         labels = list()
         for t in self._targets:
             labels.append('{} fiducial'.format(t))
@@ -684,6 +686,7 @@ class pipe(object):
         plt.savefig('fiducial_bp.pdf')
 
     def plot_noise(self):
+        mm = ['d', 'o', 's'][:self._ntarget]
         cc = ['firebrick', 'midnightblue', 'darkorange'][:self._ntarget]
         fig = plt.figure(figsize=(5*self._nfreq,5*self._nfreq))
         for i in range(self._nfreq):
@@ -692,12 +695,12 @@ class pipe(object):
             ax.set_title(str(self._freqlist[i])+'x'+str(self._freqlist[i]),fontsize=15)
             ax.set_yscale('log')
             for k in range(self._ntarget):
-                ax.errorbar(self._estimator.modes,np.mean(self._noise_bp[:,k,:,i,i],axis=0),yerr=np.std(self._noise_bp[:,k,:,i,i],axis=0),fmt='o',ms=10,mfc='none',mec=cc[k])
+                ax.errorbar(self._estimator.modes,np.mean(self._noise_bp[:,k,:,i,i],axis=0),yerr=np.std(self._noise_bp[:,k,:,i,i],axis=0),fmt=mm[k],ms=10,mfc='none',mec=cc[k])
             for j in range(i+1,self._nfreq):
                 ax = fig.add_subplot(self._nfreq,self._nfreq,1+j*self._nfreq+i)
                 ax.set_title(str(self._freqlist[i])+'x'+str(self._freqlist[j]))
                 for k in range(self._ntarget):
-                    ax.errorbar(self._estimator.modes,np.mean(self._noise_bp[:,k,:,i,j],axis=0),yerr=np.std(self._noise_bp[:,k,:,i,j],axis=0),fmt='o',ms=10,mfc='none',mec=cc[k])
+                    ax.errorbar(self._estimator.modes,np.mean(self._noise_bp[:,k,:,i,j],axis=0),yerr=np.std(self._noise_bp[:,k,:,i,j],axis=0),fmt=mm[k],ms=10,mfc='none',mec=cc[k])
         labels = list()
         for t in self._targets:
             labels.append('{} noise'.format(t))
@@ -705,6 +708,7 @@ class pipe(object):
         plt.savefig('noise_bp.pdf')
 
     def plot_template(self):
+        mm = ['d', 'o', 's'][:self._ntarget]
         cc = ['firebrick', 'midnightblue', 'darkorange'][:self._ntarget]
         fig = plt.figure(figsize=(5*self._template_nfreq,5))
         for i in range(self._template_nfreq):
@@ -713,7 +717,7 @@ class pipe(object):
             ax.tick_params(axis='both',which='major',labelsize='15')
             ax.set_yscale('log')
             for k in range(self._ntarget):
-                ax.scatter(self._estimator.modes,self._template_bp[k],marker='o',s=20,c=cc[k])
+                ax.scatter(self._estimator.modes,self._template_bp[k],marker=mm[k],s=20,c=cc[k])
         labels = list()
         for t in self._targets:
             labels.append('{} template'.format(t))
@@ -721,6 +725,7 @@ class pipe(object):
         plt.savefig('template_bp.pdf')
 
     def plot_result(self, best_bp):
+        mm = ['d', 'o', 's'][:self._ntarget]
         cc = ['firebrick', 'midnightblue', 'darkorange'][:self._ntarget]
         fig = plt.figure(figsize=(5*self._nfreq,5*self._nfreq))
         for i in range(self._nfreq):
@@ -731,7 +736,7 @@ class pipe(object):
                 ax.plot(self._estimator.modes,best_bp[k,:,i,i],ls='--',lw=2,color='k')
                 smean = self._data_bp[k,:,i,i]-np.mean(self._noise_bp[:,k,:,i,i],axis=0)
                 sstd = np.std(self._fiducial_bp[:,k,:,i,i],axis=0)+np.std(self._noise_bp[:,k,:,i,i],axis=0)
-                ax.errorbar(self._estimator.modes,smean,yerr=sstd,fmt='o',ms=10,mfc='none',mec=cc[k])
+                ax.errorbar(self._estimator.modes,smean,yerr=sstd,fmt=mm[k],ms=10,mfc='none',mec=cc[k])
             for j in range(i+1,self._nfreq):
                 ax = fig.add_subplot(self._nfreq,self._nfreq,1+j*self._nfreq+i)
                 ax.set_title(str(self._freqlist[i])+'x'+str(self._freqlist[j]))
@@ -739,7 +744,7 @@ class pipe(object):
                     ax.plot(self._estimator.modes,best_bp[k,:,i,j],color='k')
                     smean = self._data_bp[k,:,i,j]-np.mean(self._noise_bp[:,k,:,i,j],axis=0)
                     sstd = np.std(self._fiducial_bp[:,k,:,i,j],axis=0)+np.std(self._noise_bp[:,k,:,i,j],axis=0)
-                    ax.errorbar(self._estimator.modes,smean,yerr=sstd,fmt='o',ms=10,mfc='none',mec=cc[k])
+                    ax.errorbar(self._estimator.modes,smean,yerr=sstd,fmt=mm[k],ms=10,mfc='none',mec=cc[k])
         labels = list()
         for t in self._targets:
             labels.append('{} bestfit'.format(t))
@@ -749,25 +754,20 @@ class pipe(object):
         plt.savefig('result_bp.pdf')
 
     def plot_residule(self, best_bp):
+        mm = ['d', 'o', 's'][:self._ntarget]
         cc = ['firebrick', 'midnightblue', 'darkorange'][:self._ntarget]
         fig = plt.figure(figsize=(5*self._nfreq,5*self._nfreq))
         for i in range(self._nfreq):
-            ax = fig.add_subplot(self._nfreq,self._nfreq,1+i*(self._nfreq+1))
-            ax.set_title(str(self._freqlist[i])+'x'+str(self._freqlist[i]))
-            ax.set_yscale('log')
-            for k in range(self._ntarget):
-                rmean = self._data_bp[k,:,i,i]-np.mean(self._noise_bp[:,k,:,i,i],axis=0)-best_bp[k,:,i,i]
-                sstd = np.std(self._fiducial_bp[:,k,:,i,i],axis=0)+np.std(self._noise_bp[:,k,:,i,i],axis=0)
-                ax.errorbar(self._estimator.modes,np.mean(self._fiducial_bp[:,k,:,i,i],axis=0),yerr=sstd,fmt='o',ms=10,mfc='none',mec=cc[k])
-                ax.plot(self._estimator.modes,rmean,ls='--',lw=2,color='grey')
-            for j in range(i+1,self._nfreq):
+            for j in range(i,self._nfreq):
                 ax = fig.add_subplot(self._nfreq,self._nfreq,1+j*self._nfreq+i)
-                ax.set_title(str(self._freqlist[i])+'x'+str(self._freqlist[j]))
+                ax.set_title(str(self._freqlist[i])+'x'+str(self._freqlist[j]),fontsize=15)
+                ax.tick_params(axis='both',which='major',labelsize='15')
+                ax.set_yscale('log')
                 for k in range(self._ntarget):
-                    rmean = self._data_bp[k,:,i,j]-np.mean(self._noise_bp[:,k,:,i,j],axis=0)-best_bp[k,:,i,j]
+                    rmean = np.abs(self._data_bp[k,:,i,j]-np.mean(self._noise_bp[:,k,:,i,j],axis=0)-best_bp[k,:,i,j])
                     sstd = np.std(self._fiducial_bp[:,k,:,i,j],axis=0)+np.std(self._noise_bp[:,k,:,i,j],axis=0)
-                    ax.errorbar(self._estimator.modes,np.mean(self._fiducial_bp[:,k,:,i,j],axis=0),yerr=sstd,fmt='o',ms=10,mfc='none',mec=cc[k])
                     ax.plot(self._estimator.modes,rmean,ls='--',lw=2,color='grey')
+                    ax.errorbar(self._estimator.modes,np.mean(self._fiducial_bp[:,k,:,i,j],axis=0),yerr=sstd,fmt=mm[k],ms=10,mfc='none',mec=cc[k])
         labels = list()
         for t in self._targets:
             labels.append('{} residual'.format(t))

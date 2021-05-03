@@ -1,5 +1,5 @@
 import numpy as np
-from afra.tools.ps_estimator import pstimator
+from afra.tools.pcl_estimator import pstimator
 from afra.tools.icy_decorator import icy
 
 
